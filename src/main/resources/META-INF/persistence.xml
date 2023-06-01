@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="com.ufps.app_finder_jar_0.0.1-SNAPSHOTPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>com.ufps.app.finder.entity.Servicio</class>
+    <class>com.ufps.app.finder.entity.CuentaBancaria</class>
+    <class>com.ufps.app.finder.entity.ProfesionaProfesion</class>
+    <class>com.ufps.app.finder.entity.Usuario</class>
+    <class>com.ufps.app.finder.entity.Rol</class>
+    <class>com.ufps.app.finder.entity.Profesion</class>
+    <class>com.ufps.app.finder.entity.Administrador</class>
+    <class>com.ufps.app.finder.entity.Profesional</class>
+    <class>com.ufps.app.finder.entity.Publicacion</class>
+    <class>com.ufps.app.finder.dto.Sector</class>
+    <class>com.ufps.app.finder.entity.Sector</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/finder?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
+      <property name="javax.persistence.jdbc.user" value="user"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="password"/>
+    </properties>
+  </persistence-unit>
+</persistence>

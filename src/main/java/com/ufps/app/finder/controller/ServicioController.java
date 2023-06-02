@@ -16,6 +16,7 @@ import com.ufps.app.finder.repository.ProfesionalRepository;
 import com.ufps.app.finder.repository.ServicioRepository;
 import com.ufps.app.finder.repository.UsuarioRepository;
 import java.util.ArrayList;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -213,6 +214,37 @@ public class ServicioController {
 
         Profesional p = new Profesional();
         p.setId(id);
+
+        ArrayList<Servicio> listaservicio = servicioRepository.findByIdProfesional(p);
+
+        ArrayList<ServicioJson> retorno = new ArrayList<ServicioJson>();
+
+        for (Servicio x : listaservicio) {
+
+            ServicioJson svj = ServicioToServicioJson(x);
+
+            retorno.add(svj);
+
+        }
+
+        return ResponseEntity.ok(retorno);
+
+    }
+
+    @GetMapping("/listprofesionalusuario")
+    public ResponseEntity listProfesionalUsuario(@RequestParam("id") int id) {
+
+        Usuario u = new Usuario();
+        u.setId(id);
+
+        Optional<Profesional> op = profesionalRepository.findByIdPersona(u);
+
+        if (op.isEmpty()) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("vacio");
+        }
+
+        Profesional p = op.get();
 
         ArrayList<Servicio> listaservicio = servicioRepository.findByIdProfesional(p);
 

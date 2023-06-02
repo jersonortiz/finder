@@ -86,7 +86,9 @@ public class UserController {
 
         Usuario u = usuarioRepository.findById(user.getId());
         if (u == null) {
-            return new ResponseEntity("usuario no existe", HttpStatus.ACCEPTED);
+            MensajeJson msg = new MensajeJson();
+            msg.setMsg("no");
+            return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
         }
 
         u.setId(user.getId());

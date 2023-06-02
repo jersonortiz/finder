@@ -7,6 +7,7 @@ package com.ufps.app.finder.repository;
 import com.ufps.app.finder.entity.Profesional;
 import com.ufps.app.finder.entity.Publicacion;
 import java.util.ArrayList;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,7 +24,7 @@ public interface PublicacionRepository extends JpaRepository<Publicacion, Long> 
     
     ArrayList<Publicacion> findByIdProfesionalOrderByIdDesc(Profesional id);
     
-    Publicacion findById(Integer id);
+    Optional<Publicacion> findById(Integer id);
     
     
     

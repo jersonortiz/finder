@@ -17,11 +17,13 @@ import com.ufps.app.finder.entity.Profesion;
 import com.ufps.app.finder.entity.ProfesionaProfesion;
 import com.ufps.app.finder.entity.Profesional;
 import com.ufps.app.finder.entity.Publicacion;
+import com.ufps.app.finder.entity.Rol;
 import com.ufps.app.finder.entity.Sector;
 import com.ufps.app.finder.entity.Usuario;
 import com.ufps.app.finder.repository.ProfesionaProfesionRepository;
 import com.ufps.app.finder.repository.ProfesionalRepository;
 import com.ufps.app.finder.repository.PublicacionRepository;
+import com.ufps.app.finder.repository.RolRepository;
 import com.ufps.app.finder.repository.UsuarioRepository;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -57,6 +59,9 @@ public class ProfesionalController {
 
     @Autowired
     private PublicacionRepository publicacionRepository;
+
+    @Autowired
+    private RolRepository rolRepository;
 
     @GetMapping("/list")
     public ResponseEntity list() {
@@ -108,12 +113,12 @@ public class ProfesionalController {
     public ResponseEntity consulta(@RequestParam("id") int id) {
 
         Profesional ps = profesionalRepository.findById(id);
-        
-        if(ps== null){
-            MensajeJson m= new MensajeJson();
+
+        if (ps == null) {
+            MensajeJson m = new MensajeJson();
             m.setMsg("profesional no existe");
-             return ResponseEntity.ok(m);
-            
+            return ResponseEntity.ok(m);
+
         }
 
         Usuario xper = ps.getIdPersona();
@@ -262,6 +267,75 @@ public class ProfesionalController {
             msg.setMsg("no");
             return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @PostMapping("/cambiousuario")
+    public ResponseEntity cambioUsuario(@RequestBody ProfesionalJson pro) {
+
+        Profesional p = new Profesional();
+        p.setId(pro.getId());
+
+        Profesional ps = profesionalRepository.findById(p.getId());
+
+        Usuario u = ps.getIdPersona();
+
+        Rol r = rolRepository.findById(2);
+
+        u.setIdRol(r);
+
+        try {
+            profesionalRepository.delete(ps);
+            usuarioRepository.save(u);
+
+            MensajeJson msg = new MensajeJson();
+            msg.setMsg("ok");
+            return ResponseEntity.ok(msg);
+        } catch (Exception e) {
+            MensajeJson msg = new MensajeJson();
+            msg.setMsg("no");
+            return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/cambioprofesional")
+    public ResponseEntity cambioprofesional(@RequestBody UsuarioJson user) {
+
+        Rol r = rolRepository.findById(3);
+        Usuario u = usuarioRepository.findById(user.getId());
+
+        u.setIdRol(r);
+
+        usuarioRepository.save(u);
+
+        Profesional p = new Profesional();
+
+        p.setIdPersona(u);
+        p.setEstado(true);
+        p.setCiudad("cucuta");
+
+        profesionalRepository.save(p);
+
+        return ResponseEntity.ok(user);
+
+    }
+
+    @GetMapping("/obtenerporusuario")
+    public ResponseEntity loadByUser(@RequestParam("id") int id) {
+
+        Usuario u = new Usuario();
+        u.setId(id);
+
+        Optional<Profesional> op = profesionalRepository.findByIdPersona(u);
+
+        if (op.isEmpty()) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("vacio");
+        }
+
+        ProfesionalJson pj = ProfesionalToProfesionalJson(op.get());
+
+        return ResponseEntity.ok(pj);
+
     }
 
     private PublicacionJson PublicaciontoPublicacionJson(Publicacion x, int id) {

@@ -10,10 +10,12 @@ import com.ufps.app.finder.dto.PublicacionJson;
 import com.ufps.app.finder.dto.UsuarioJson;
 import com.ufps.app.finder.entity.Profesional;
 import com.ufps.app.finder.entity.Publicacion;
+import com.ufps.app.finder.entity.Usuario;
 import com.ufps.app.finder.repository.ProfesionalRepository;
 import com.ufps.app.finder.repository.PublicacionRepository;
 import com.ufps.app.finder.repository.UsuarioRepository;
 import java.util.ArrayList;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,21 +62,53 @@ public class PublicacionController {
 
     }
 
-    @GetMapping("/listprofesionalid")
-    public ResponseEntity listbyidprofesional(@RequestParam("id") int id) {
+    @GetMapping("/porprofesional")
+    public ResponseEntity porProfesional(@RequestParam("id") int id) {
 
         Profesional ps = new Profesional();
         ps.setId(id);
 
         ArrayList<Publicacion> publicaciones = (ArrayList<Publicacion>) publicacionRepository.findByIdProfesionalOrderByIdDesc(ps);
+
+        if (publicaciones.isEmpty()) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("no");
+            return ResponseEntity.ok(m);
+        }
+
         ArrayList<PublicacionJson> lista = new ArrayList<PublicacionJson>();
         for (Publicacion x : publicaciones) {
-            PublicacionJson p = new PublicacionJson();
-            p.setId(x.getId());
-            p.setResumen(x.getResumen());
-            p.setTitulo(x.getTitulo());
-            p.setContenido(x.getContenido());
-            p.setCosto(x.getCosto());
+            PublicacionJson p = PublicaciontoPublicacionJson(x,ps.getId());
+        
+            lista.add(p);
+        }
+        return ResponseEntity.ok(lista);
+
+    }
+
+    @GetMapping("/porusuario")
+    public ResponseEntity porUsuario(@RequestParam("id") int id) {
+
+        Usuario u = new Usuario();
+        u.setId(id);
+
+        Optional<Profesional> op = profesionalRepository.findByIdPersona(u);
+
+        MensajeJson m = new MensajeJson();
+
+        if (op.isEmpty()) {
+            m.setMsg("vacio");
+            return new ResponseEntity(m, HttpStatus.BAD_REQUEST);
+        }
+
+        Profesional ps = op.get();
+
+        ArrayList<Publicacion> publicaciones = (ArrayList<Publicacion>) publicacionRepository.findByIdProfesionalOrderByIdDesc(ps);
+
+        ArrayList<PublicacionJson> lista = new ArrayList<PublicacionJson>();
+        for (Publicacion x : publicaciones) {
+
+            PublicacionJson p = PublicaciontoPublicacionJson(x, ps.getId());
 
             lista.add(p);
         }
@@ -85,7 +119,15 @@ public class PublicacionController {
     @GetMapping("/obtener")
     public ResponseEntity obtener(@RequestParam("id") int id) {
 
-        Publicacion x = publicacionRepository.findById(id);
+        Optional<Publicacion> ox = publicacionRepository.findById(id);
+
+        if (ox.isEmpty()) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("no");
+            return ResponseEntity.ok(m);
+        }
+
+        Publicacion x = ox.get();
 
         PublicacionJson p = new PublicacionJson();
         p.setId(x.getId());
@@ -100,9 +142,11 @@ public class PublicacionController {
     }
 
     @PostMapping("/registro")
-    public ResponseEntity registro(PublicacionJson pub) {
+    public ResponseEntity registro(@RequestBody PublicacionJson pub) {
 
         Publicacion p = new Publicacion();
+
+        System.out.println(pub.toString());
 
         p.setTitulo(pub.getTitulo());
         p.setResumen(pub.getResumen());
@@ -113,25 +157,36 @@ public class PublicacionController {
 
         p.setIdProfesional(pp);
 
-        publicacionRepository.save(p);
+        p = publicacionRepository.save(p);
+
+        pub.setId(p.getId());
 
         return ResponseEntity.ok(pub);
 
     }
 
     @PostMapping("/editar")
-    public ResponseEntity editar(PublicacionJson pub) {
+    public ResponseEntity editar(@RequestBody PublicacionJson pub) {
 
-        Publicacion p = publicacionRepository.findById(pub.getId());
+        Optional<Publicacion> op = publicacionRepository.findById(pub.getId());
+        if (op.isEmpty()) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("no");
+            return ResponseEntity.ok(m);
+        }
+
+        Publicacion p = op.get();
 
         p.setTitulo(pub.getTitulo());
         p.setResumen(pub.getResumen());
         p.setContenido(pub.getContenido());
         p.setCosto(pub.getCosto());
 
-        publicacionRepository.save(p);
+        p = publicacionRepository.save(p);
 
-        return ResponseEntity.ok(p);
+        pub.setId(p.getId());
+
+        return ResponseEntity.ok(pub);
 
     }
 
@@ -153,4 +208,15 @@ public class PublicacionController {
         }
     }
 
+    private PublicacionJson PublicaciontoPublicacionJson(Publicacion x, int id) {
+        PublicacionJson p = new PublicacionJson();
+        p.setId(x.getId());
+        p.setResumen(x.getResumen());
+        p.setTitulo(x.getTitulo());
+        p.setContenido(x.getContenido());
+        p.setCosto(x.getCosto());
+        p.setIdProfesional(id);
+
+        return p;
+    }
 }

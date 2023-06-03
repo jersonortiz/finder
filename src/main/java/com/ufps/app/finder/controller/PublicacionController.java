@@ -5,15 +5,12 @@
 package com.ufps.app.finder.controller;
 
 import com.ufps.app.finder.dto.MensajeJson;
-import com.ufps.app.finder.dto.ProfesionalListJson;
 import com.ufps.app.finder.dto.PublicacionJson;
-import com.ufps.app.finder.dto.UsuarioJson;
 import com.ufps.app.finder.entity.Profesional;
 import com.ufps.app.finder.entity.Publicacion;
 import com.ufps.app.finder.entity.Usuario;
 import com.ufps.app.finder.repository.ProfesionalRepository;
 import com.ufps.app.finder.repository.PublicacionRepository;
-import com.ufps.app.finder.repository.UsuarioRepository;
 import java.util.ArrayList;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +59,28 @@ public class PublicacionController {
 
     }
 
+    @GetMapping("/listactivo")
+    public ResponseEntity listActivo() {
+
+        ArrayList<Publicacion> publicaciones = (ArrayList<Publicacion>) publicacionRepository.findAllByOrderByIdDesc();
+
+        ArrayList<PublicacionJson> lista = new ArrayList<PublicacionJson>();
+        for (Publicacion x : publicaciones) {
+
+            Profesional pr = x.getIdProfesional();
+
+            if (!pr.getEstado()) {
+                continue;
+            }
+
+            PublicacionJson p = PublicaciontoPublicacionJson(x, pr.getId());
+
+            lista.add(p);
+        }
+        return ResponseEntity.ok(lista);
+
+    }
+
     @GetMapping("/porprofesional")
     public ResponseEntity porProfesional(@RequestParam("id") int id) {
 
@@ -78,8 +97,8 @@ public class PublicacionController {
 
         ArrayList<PublicacionJson> lista = new ArrayList<PublicacionJson>();
         for (Publicacion x : publicaciones) {
-            PublicacionJson p = PublicaciontoPublicacionJson(x,ps.getId());
-        
+            PublicacionJson p = PublicaciontoPublicacionJson(x, ps.getId());
+
             lista.add(p);
         }
         return ResponseEntity.ok(lista);

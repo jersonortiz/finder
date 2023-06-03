@@ -71,13 +71,13 @@ public class ProfesionalController {
 
         for (Profesional x : ps) {
 
+            if (!x.getEstado()) {
+                continue;
+            }
+
             Usuario xper = x.getIdPersona();
 
-            ProfesionalListJson p = new ProfesionalListJson();
-            p.setId(x.getId());
-            p.setNombre(xper.getNombre());
-            p.setApellido(xper.getApellido());
-            p.setEdad(xper.getEdad());
+            ProfesionalListJson p = ProfesionalToProfesionalListJson(x, xper);
 
             ArrayList< ProfesionJson> pj = new ArrayList<ProfesionJson>();
 
@@ -277,6 +277,12 @@ public class ProfesionalController {
 
         Profesional ps = profesionalRepository.findById(p.getId());
 
+        MensajeJson msg = new MensajeJson();
+        if (ps == null) {
+            msg.setMsg("profesional no existe");
+            return ResponseEntity.ok(msg);
+        }
+
         Usuario u = ps.getIdPersona();
 
         Rol r = rolRepository.findById(2);
@@ -285,13 +291,47 @@ public class ProfesionalController {
 
         try {
             profesionalRepository.delete(ps);
-            usuarioRepository.save(u);
+            u = usuarioRepository.save(u);
+            
+            UsuarioJson ujj = UsuarioToUsuarioJson(u);
 
-            MensajeJson msg = new MensajeJson();
-            msg.setMsg("ok");
-            return ResponseEntity.ok(msg);
+            return ResponseEntity.ok(ujj);
         } catch (Exception e) {
-            MensajeJson msg = new MensajeJson();
+            msg.setMsg("no");
+            return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/cambiousuarioconusuario")
+    public ResponseEntity cambioUsuarioWithUsuario(@RequestBody UsuarioJson pro) {
+
+        Usuario u = new Usuario();
+        u.setId(pro.getId());
+
+        Optional<Profesional> op = profesionalRepository.findByIdPersona(u);
+
+        MensajeJson msg = new MensajeJson();
+        if (op.isEmpty()) {
+            msg.setMsg("usuario no existe");
+            return ResponseEntity.ok(msg);
+        }
+
+        Profesional ps = op.get();
+
+        u = ps.getIdPersona();
+
+        Rol r = rolRepository.findById(2);
+
+        u.setIdRol(r);
+
+        try {
+            profesionalRepository.delete(ps);
+            u = usuarioRepository.save(u);
+            
+            UsuarioJson ujj = UsuarioToUsuarioJson(u);
+
+            return ResponseEntity.ok(ujj);
+        } catch (Exception e) {
             msg.setMsg("no");
             return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
         }
@@ -313,9 +353,12 @@ public class ProfesionalController {
         p.setEstado(true);
         p.setCiudad("cucuta");
 
-        profesionalRepository.save(p);
+        p = profesionalRepository.save(p);
+        
+        UsuarioJson ujj = UsuarioToUsuarioJson(u);
 
-        return ResponseEntity.ok(user);
+
+        return ResponseEntity.ok(ujj);
 
     }
 
@@ -388,6 +431,11 @@ public class ProfesionalController {
         p.setTelefono(xper.getTelefono());
         p.setEmail(xper.getEmail());
         p.setCiudad(ps.getCiudad());
+        p.setIdpersona(xper.getId());
+        p.setEstado(false);
+        if (ps.getEstado()) {
+            p.setEstado(true);
+        }
 
         return p;
     }

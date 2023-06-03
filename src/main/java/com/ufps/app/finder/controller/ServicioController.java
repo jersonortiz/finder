@@ -54,6 +54,8 @@ public class ServicioController {
     
     estado = 5:  reseñado
     
+    estado = 6 cancelado
+    
      */
     @GetMapping("/list")
     public ResponseEntity list() {
@@ -231,6 +233,7 @@ public class ServicioController {
 
     }
 
+    
     @GetMapping("/listprofesionalusuario")
     public ResponseEntity listProfesionalUsuario(@RequestParam("id") int id) {
 

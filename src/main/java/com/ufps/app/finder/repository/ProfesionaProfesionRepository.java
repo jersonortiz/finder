@@ -4,21 +4,25 @@
  */
 package com.ufps.app.finder.repository;
 
+import com.ufps.app.finder.entity.Profesion;
 import com.ufps.app.finder.entity.ProfesionaProfesion;
 import com.ufps.app.finder.entity.Profesional;
 import java.util.ArrayList;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  *
- * @author 
+ * @author
  */
 @Repository
 public interface ProfesionaProfesionRepository extends JpaRepository<ProfesionaProfesion, Long> {
-    
+
     ArrayList<ProfesionaProfesion> findByIdProfesional(Profesional id);
-    
-    ArrayList<ProfesionaProfesion> findByIdProfesion(Profesional id);
+
+    ArrayList<ProfesionaProfesion> findByIdProfesion(Profesion id);
+
+    Optional<ProfesionaProfesion> findByIdProfesionalAndIdProfesion(Profesional profesional, Profesion profesion);
 
 }

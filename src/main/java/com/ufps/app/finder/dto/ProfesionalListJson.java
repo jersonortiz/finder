@@ -15,6 +15,8 @@ import lombok.Data;
 public class ProfesionalListJson {
 
     private int id;
+    
+    private int idpersona;
 
     private String nombre;
 
@@ -27,6 +29,8 @@ public class ProfesionalListJson {
     private String email;
     
     private String ciudad;
+    
+    private boolean estado;
 
     private ArrayList<ProfesionJson> profesiones;
    

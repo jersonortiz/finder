@@ -13,6 +13,7 @@ import com.ufps.app.finder.repository.ProfesionalRepository;
 import com.ufps.app.finder.repository.RolRepository;
 import com.ufps.app.finder.repository.UsuarioRepository;
 import java.util.ArrayList;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,11 +92,20 @@ public class UserController {
             return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
         }
 
-        u.setId(user.getId());
+        //u.setId(user.getId());
         u.setNombre(user.getNombre());
         u.setApellido(user.getApellido());
         u.setDocumento(user.getDocumento());
         u.setEmail(user.getEmail());
+
+        Usuario ematest = usuarioRepository.findByEmail(user.getEmail());
+
+        if (Objects.equals(u.getId(), ematest.getId())) {
+            MensajeJson msg = new MensajeJson();
+            msg.setMsg("email ya en uso");
+            return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+        }
+
         u.setTelefono(user.getTelefono());
         u.setEdad(user.getEdad());
 

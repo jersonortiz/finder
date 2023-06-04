@@ -12,6 +12,7 @@ import com.ufps.app.finder.entity.Profesion;
 import com.ufps.app.finder.entity.ProfesionaProfesion;
 import com.ufps.app.finder.entity.Profesional;
 import com.ufps.app.finder.entity.Sector;
+import com.ufps.app.finder.entity.Usuario;
 import com.ufps.app.finder.repository.ProfesionRepository;
 import com.ufps.app.finder.repository.ProfesionaProfesionRepository;
 import com.ufps.app.finder.repository.ProfesionalRepository;
@@ -103,6 +104,50 @@ public class ProfesionController {
 
     }
 
+    @PostMapping("/asignarwithuseid")
+    public ResponseEntity asginarConIdUsuario(@RequestBody ProfesionaProfesionJson ppj) {
+
+        Usuario u = new Usuario();
+        u.setId(ppj.getIdProfesional());
+
+        Optional<Profesional> op = profesionalRepository.findByIdPersona(u);
+
+        if (op.isEmpty()) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("no es profesional");
+            return ResponseEntity.ok(m);
+        }
+
+        Profesional pr = op.get();
+
+        Profesion pro = new Profesion();
+        pro.setId(ppj.getIdProfesion());
+
+        Optional<ProfesionaProfesion> propro = profesionaProfesionRepository.findByIdProfesionalAndIdProfesion(pr, pro);
+
+        if (propro.isPresent()) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("ya asignado");
+            return ResponseEntity.ok(m);
+        }
+
+        ProfesionaProfesion prodb = new ProfesionaProfesion();
+        prodb.setIdProfesion(pro);
+        prodb.setIdProfesional(pr);
+
+        ProfesionaProfesionJson rett = new ProfesionaProfesionJson();
+
+        rett.setIdProfesion(ppj.getIdProfesion());
+        rett.setIdProfesional(ppj.getIdProfesional());
+
+        prodb = profesionaProfesionRepository.save(prodb);
+
+        rett.setId(prodb.getId());
+
+        return ResponseEntity.ok(rett);
+
+    }
+
     @PostMapping("/desasignar")
     public ResponseEntity desasignar(@RequestBody ProfesionaProfesionJson ppj) {
 
@@ -130,8 +175,45 @@ public class ProfesionController {
 
     }
 
+    @PostMapping("/desasignarwithuserid")
+    public ResponseEntity desasignarWithUserID(@RequestBody ProfesionaProfesionJson ppj) {
+
+        Usuario u = new Usuario();
+        u.setId(ppj.getIdProfesional());
+
+        Optional<Profesional> op = profesionalRepository.findByIdPersona(u);
+
+        if (op.isEmpty()) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("no es profesional");
+            return ResponseEntity.ok(m);
+        }
+
+        Profesional pr = op.get();
+
+        Profesion pro = new Profesion();
+        pro.setId(ppj.getIdProfesion());
+
+        Optional<ProfesionaProfesion> propro = profesionaProfesionRepository.findByIdProfesionalAndIdProfesion(pr, pro);
+
+        MensajeJson m = new MensajeJson();
+        if (propro.isEmpty()) {
+
+            m.setMsg("no");
+            return ResponseEntity.ok(m);
+        }
+
+        ProfesionaProfesion prodb = propro.get();
+
+        profesionaProfesionRepository.delete(prodb);
+
+        m.setMsg("si");
+        return ResponseEntity.ok(m);
+
+    }
+
     @GetMapping("/listprofdisponible")
-    public ResponseEntity list(@RequestParam("id") int id) {
+    public ResponseEntity listDisponible(@RequestParam("id") int id) {
 
         Profesional p = new Profesional();
         p.setId(id);
@@ -139,6 +221,53 @@ public class ProfesionController {
         Profesional ps = profesionalRepository.findById(p.getId());
 
         ArrayList<ProfesionaProfesion> relas = profesionaProfesionRepository.findByIdProfesional(p);
+
+        ArrayList<Profesion> porremover = new ArrayList<Profesion>();
+        for (ProfesionaProfesion pp : relas) {
+            Profesion pro = pp.getIdProfesion();
+            porremover.add(pro);
+        }
+
+        ArrayList<Profesion> profesiones = (ArrayList<Profesion>) profesionRepository.findAll();
+        profesiones.removeAll(porremover);
+
+        ArrayList<ProfesionJson> lista = new ArrayList<ProfesionJson>();
+        for (Profesion x : profesiones) {
+
+            ProfesionJson pj = new ProfesionJson();
+            pj.setId(x.getId());
+            pj.setProfesion(x.getProfesion());
+
+            Sector sec = x.getIdSector();
+            SectorJson s = new SectorJson();
+            s.setId(sec.getId());
+            s.setNombre(sec.getNombre());
+
+            pj.setSector(s);
+
+            lista.add(pj);
+        }
+        return ResponseEntity.ok(lista);
+
+    }
+
+    @GetMapping("/listprofdisponiblewithuserid")
+    public ResponseEntity listDisponibleUser(@RequestParam("id") int id) {
+
+        Usuario u = new Usuario();
+        u.setId(id);
+
+        Optional<Profesional> op = profesionalRepository.findByIdPersona(u);
+
+        if (op.isEmpty()) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("no es profesional");
+            return ResponseEntity.ok(m);
+        }
+
+        Profesional ps = op.get();
+
+        ArrayList<ProfesionaProfesion> relas = profesionaProfesionRepository.findByIdProfesional(ps);
 
         ArrayList<Profesion> porremover = new ArrayList<Profesion>();
         for (ProfesionaProfesion pp : relas) {

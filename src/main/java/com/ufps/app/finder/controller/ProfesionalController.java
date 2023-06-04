@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -152,6 +151,66 @@ public class ProfesionalController {
         consulta.setProfesional(p);
 
         ArrayList<Publicacion> publicaciones = (ArrayList<Publicacion>) publicacionRepository.findByIdProfesionalOrderByIdDesc(ps);
+        ArrayList<PublicacionJson> lista = new ArrayList<PublicacionJson>();
+        for (Publicacion x : publicaciones) {
+
+            PublicacionJson publicacionretorno = PublicaciontoPublicacionJson(x, id);
+            lista.add(publicacionretorno);
+        }
+        consulta.setPublicaciones(lista);
+
+        return ResponseEntity.ok(consulta);
+
+    }
+
+    @GetMapping("/consultauser")
+    public ResponseEntity consultaWithUSer(@RequestParam("id") int id) {
+
+        Usuario u = new Usuario();
+        u.setId(id);
+
+        Optional<Profesional> ps = profesionalRepository.findByIdPersona(u);
+
+        if (ps.isEmpty()) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("profesional no existe");
+            return ResponseEntity.ok(m);
+
+        }
+
+        Profesional p = ps.get();
+
+        Usuario xper = p.getIdPersona();
+
+        ConsultaProfesionalJson consulta = new ConsultaProfesionalJson();
+
+        ProfesionalListJson pro = ProfesionalToProfesionalListJson(p, xper);
+
+        ArrayList<ProfesionaProfesion> relas = profesionaProfesionRepository.findByIdProfesional(p);
+
+        if (relas != null) {
+            ArrayList< ProfesionJson> pj = new ArrayList<ProfesionJson>();
+            for (ProfesionaProfesion ppf : relas) {
+
+                Profesion prof = ppf.getIdProfesion();
+
+                ProfesionJson pjs = ProfesionToProfesionJson(prof);
+
+                Sector sec = prof.getIdSector();
+
+                SectorJson secj = SectorToSectorJson(sec);
+
+                pjs.setSector(secj);
+
+                pj.add(pjs);
+            }
+            pro.setProfesiones(pj);
+
+        }
+
+        consulta.setProfesional(pro);
+
+        ArrayList<Publicacion> publicaciones = (ArrayList<Publicacion>) publicacionRepository.findByIdProfesionalOrderByIdDesc(p);
         ArrayList<PublicacionJson> lista = new ArrayList<PublicacionJson>();
         for (Publicacion x : publicaciones) {
 
@@ -292,7 +351,7 @@ public class ProfesionalController {
         try {
             profesionalRepository.delete(ps);
             u = usuarioRepository.save(u);
-            
+
             UsuarioJson ujj = UsuarioToUsuarioJson(u);
 
             return ResponseEntity.ok(ujj);
@@ -327,7 +386,7 @@ public class ProfesionalController {
         try {
             profesionalRepository.delete(ps);
             u = usuarioRepository.save(u);
-            
+
             UsuarioJson ujj = UsuarioToUsuarioJson(u);
 
             return ResponseEntity.ok(ujj);
@@ -340,8 +399,21 @@ public class ProfesionalController {
     @PostMapping("/cambioprofesional")
     public ResponseEntity cambioprofesional(@RequestBody UsuarioJson user) {
 
-        Rol r = rolRepository.findById(3);
         Usuario u = usuarioRepository.findById(user.getId());
+        System.out.println(user.getId());
+
+        Optional<Profesional> pfind = profesionalRepository.findByIdPersona(u);
+
+        if (pfind.isPresent()) {
+
+            MensajeJson m = new MensajeJson();
+            m.setMsg("ya es profesional");
+            return ResponseEntity.ok(m);
+
+        }
+
+        Rol r = rolRepository.findById(3);
+        System.out.println(user.getId());
 
         u.setIdRol(r);
 
@@ -354,9 +426,8 @@ public class ProfesionalController {
         p.setCiudad("cucuta");
 
         p = profesionalRepository.save(p);
-        
-        UsuarioJson ujj = UsuarioToUsuarioJson(u);
 
+        UsuarioJson ujj = UsuarioToUsuarioJson(u);
 
         return ResponseEntity.ok(ujj);
 
@@ -417,6 +488,7 @@ public class ProfesionalController {
         uj.setEmail(u.getEmail());
         uj.setDocumento(u.getDocumento());
         uj.setContraseña(u.getContraseña());
+        uj.setTelefono(u.getTelefono());
 
         return uj;
     }

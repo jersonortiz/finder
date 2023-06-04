@@ -100,10 +100,12 @@ public class UserController {
 
         Usuario ematest = usuarioRepository.findByEmail(user.getEmail());
 
-        if (Objects.equals(u.getId(), ematest.getId())) {
-            MensajeJson msg = new MensajeJson();
-            msg.setMsg("email ya en uso");
-            return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+        if (ematest != null) {
+            if (Objects.equals(u.getId(), ematest.getId())) {
+                MensajeJson msg = new MensajeJson();
+                msg.setMsg("email ya en uso");
+                return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+            }
         }
 
         u.setTelefono(user.getTelefono());

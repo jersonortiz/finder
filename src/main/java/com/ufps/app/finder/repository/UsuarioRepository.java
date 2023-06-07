@@ -5,6 +5,7 @@
 package com.ufps.app.finder.repository;
 
 import com.ufps.app.finder.entity.Usuario;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -17,7 +18,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
     Usuario findById(Integer id);
 
-    Usuario findByEmail(String email);
+    Optional<Usuario> findByEmail(String email);
 
     void deleteById(Integer id);
 }

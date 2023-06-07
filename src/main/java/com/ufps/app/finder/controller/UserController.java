@@ -14,6 +14,7 @@ import com.ufps.app.finder.repository.RolRepository;
 import com.ufps.app.finder.repository.UsuarioRepository;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,15 +46,15 @@ public class UserController {
 
         System.out.print(user.toString());
 
-        Usuario u = usuarioRepository.findByEmail(user.getEmail());
-        if (u != null) {
+        Optional<Usuario> ou = usuarioRepository.findByEmail(user.getEmail());
+        if (ou.isPresent()) {
             MensajeJson mm = new MensajeJson();
             mm.setMsg("usuario ya existe");
 
             return ResponseEntity.ok(mm);
         }
 
-        u = new Usuario();
+        Usuario u = new Usuario();
 
         u.setNombre(user.getNombre());
         u.setApellido(user.getApellido());
@@ -98,9 +99,10 @@ public class UserController {
         u.setDocumento(user.getDocumento());
         u.setEmail(user.getEmail());
 
-        Usuario ematest = usuarioRepository.findByEmail(user.getEmail());
+        Optional<Usuario> oematest = usuarioRepository.findByEmail(user.getEmail());
 
-        if (ematest != null) {
+        if (oematest.isPresent()) {
+            Usuario ematest = oematest.get();
             if (!Objects.equals(u.getId(), ematest.getId())) {
                 MensajeJson msg = new MensajeJson();
                 msg.setMsg("email ya en uso");
@@ -124,6 +126,8 @@ public class UserController {
 
     }
 
+    
+    
     @GetMapping("/list")
     public ResponseEntity list() {
 
@@ -149,14 +153,21 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginJson user) {
 
-        Usuario x = usuarioRepository.findByEmail(user.getEmail());
+        Optional<Usuario> ox = usuarioRepository.findByEmail(user.getEmail());
+        MensajeJson m = new MensajeJson();
 
-        if (x == null) {
-            return new ResponseEntity("Usuario no valido", HttpStatus.UNAUTHORIZED);
+        if (ox.isEmpty()) {
+
+            m.setMsg("No existe el usuario");
+            return ResponseEntity.ok(m);
         }
 
+        Usuario x = ox.get();
+
         if (!x.getContraseña().equals(user.getContraseña())) {
-            return new ResponseEntity("No coincide la password", HttpStatus.UNAUTHORIZED);
+
+            m.setMsg("Contraseña incorrecta");
+            return ResponseEntity.ok(m);
         }
 
         UsuarioJson userj = new UsuarioJson();

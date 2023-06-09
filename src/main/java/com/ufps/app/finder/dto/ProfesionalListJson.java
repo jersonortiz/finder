@@ -25,7 +25,7 @@ public class ProfesionalListJson {
     private String apellido;
 
     //private int edad;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyy-MM-dd", timezone = "America/Bogota")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyy-MM-dd", timezone = "UTC")
     private Date fechaNacimiento;
 
     private String telefono;

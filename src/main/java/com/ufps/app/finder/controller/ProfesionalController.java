@@ -483,12 +483,12 @@ public class ProfesionalController {
         uj.setId(u.getId());
         uj.setNombre(u.getNombre());
         uj.setApellido(u.getApellido());
-        uj.setEdad(u.getEdad());
         uj.setRol(u.getIdRol().getId());
         uj.setEmail(u.getEmail());
         uj.setDocumento(u.getDocumento());
         uj.setContraseña(u.getContraseña());
         uj.setTelefono(u.getTelefono());
+        uj.setFechaNacimiento(u.getFechaNacimiento());
 
         return uj;
     }
@@ -499,7 +499,7 @@ public class ProfesionalController {
         p.setId(ps.getId());
         p.setNombre(xper.getNombre());
         p.setApellido(xper.getApellido());
-        p.setEdad(xper.getEdad());
+        p.setFechaNacimiento(xper.getFechaNacimiento());
         p.setTelefono(xper.getTelefono());
         p.setEmail(xper.getEmail());
         p.setCiudad(ps.getCiudad());

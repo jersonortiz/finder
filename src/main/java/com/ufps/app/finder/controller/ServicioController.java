@@ -233,7 +233,6 @@ public class ServicioController {
 
     }
 
-    
     @GetMapping("/listprofesionalusuario")
     public ResponseEntity listProfesionalUsuario(@RequestParam("id") int id) {
 
@@ -305,7 +304,7 @@ public class ServicioController {
         uj.setId(u.getId());
         uj.setNombre(u.getNombre());
         uj.setApellido(u.getApellido());
-        uj.setEdad(u.getEdad());
+        uj.setFechaNacimiento(u.getFechaNacimiento());
         uj.setRol(u.getIdRol().getId());
         uj.setEmail(u.getEmail());
         uj.setDocumento(u.getDocumento());

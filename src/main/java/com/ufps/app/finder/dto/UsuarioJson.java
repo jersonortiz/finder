@@ -4,6 +4,8 @@
  */
 package com.ufps.app.finder.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import java.util.Date;
 import lombok.Data;
 
 /**
@@ -29,6 +31,9 @@ public class UsuarioJson {
 
     private int rol;
     
-    private int edad;
-
+    //private int edad;
+    
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyy-MM-dd", timezone = "America/Bogota")
+    private Date fechaNacimiento;
+    
 }

@@ -12,7 +12,9 @@ import com.ufps.app.finder.entity.Usuario;
 import com.ufps.app.finder.repository.ProfesionalRepository;
 import com.ufps.app.finder.repository.RolRepository;
 import com.ufps.app.finder.repository.UsuarioRepository;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,8 +64,9 @@ public class UserController {
         u.setEmail(user.getEmail());
         u.setContraseña(user.getContraseña());
         u.setTelefono(user.getTelefono());
-        u.setEdad(user.getEdad());
 
+        u.setFechaNacimiento(user.getFechaNacimiento());
+        System.out.println("edad: " + user.getFechaNacimiento());
         Rol r = new Rol();
         r.setId(user.getRol());
         u.setIdRol(r);
@@ -111,7 +114,7 @@ public class UserController {
         }
 
         u.setTelefono(user.getTelefono());
-        u.setEdad(user.getEdad());
+        u.setFechaNacimiento(user.getFechaNacimiento());
 
         if (u.getIdRol().getId() != user.getRol()) {
 
@@ -126,8 +129,6 @@ public class UserController {
 
     }
 
-    
-    
     @GetMapping("/list")
     public ResponseEntity list() {
 
@@ -142,7 +143,8 @@ public class UserController {
             userj.setEmail(x.getEmail());
             userj.setTelefono(x.getTelefono());
             userj.setRol(x.getIdRol().getId());
-            userj.setEdad(x.getEdad());
+
+            userj.setFechaNacimiento(x.getFechaNacimiento());
             System.out.println(x.getNombre());
             lista.add(userj);
         }
@@ -178,6 +180,7 @@ public class UserController {
         userj.setEmail(x.getEmail());
         userj.setTelefono(x.getTelefono());
         userj.setRol(x.getIdRol().getId());
+        userj.setFechaNacimiento(x.getFechaNacimiento());
 
         return new ResponseEntity(userj, HttpStatus.ACCEPTED);
 
@@ -221,7 +224,7 @@ public class UserController {
         userj.setEmail(x.getEmail());
         userj.setTelefono(x.getTelefono());
         userj.setRol(x.getIdRol().getId());
-        userj.setEdad(x.getEdad());
+        userj.setFechaNacimiento(x.getFechaNacimiento());
 
         return ResponseEntity.ok(userj);
     }
@@ -234,4 +237,11 @@ public class UserController {
 		</dependency>
     
      */
+    private int getEdad(Date nacimiento) {
+        Date fechaActual = new Date();
+        long tiempoTranscurrido = fechaActual.getTime() - nacimiento.getTime();
+        long edadMillis = 1000L * 60 * 60 * 24 * 365; // 1 año en milisegundos
+        int edad = (int) (tiempoTranscurrido / edadMillis);
+        return edad;
+    }
 }

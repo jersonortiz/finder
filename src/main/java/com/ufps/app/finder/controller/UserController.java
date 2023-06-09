@@ -237,11 +237,4 @@ public class UserController {
 		</dependency>
     
      */
-    private int getEdad(Date nacimiento) {
-        Date fechaActual = new Date();
-        long tiempoTranscurrido = fechaActual.getTime() - nacimiento.getTime();
-        long edadMillis = 1000L * 60 * 60 * 24 * 365; // 1 año en milisegundos
-        int edad = (int) (tiempoTranscurrido / edadMillis);
-        return edad;
-    }
 }

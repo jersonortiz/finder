@@ -13,6 +13,10 @@
     <class>com.ufps.app.finder.entity.Publicacion</class>
     <class>com.ufps.app.finder.dto.Sector</class>
     <class>com.ufps.app.finder.entity.Sector</class>
+    <class>com.ufps.app.finder.entity.TipoTitulo</class>
+    <class>com.ufps.app.finder.entity.Competencia</class>
+    <class>com.ufps.app.finder.entity.Habilidades</class>
+    <class>com.ufps.app.finder.entity.Titulo</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/finder?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
       <property name="javax.persistence.jdbc.user" value="user"/>

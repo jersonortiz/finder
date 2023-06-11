@@ -6,7 +6,9 @@ package com.ufps.app.finder.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,10 +18,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -39,6 +43,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Usuario.findByContrase\u00f1a", query = "SELECT u FROM Usuario u WHERE u.contrase\u00f1a = :contrase\u00f1a"),
     @NamedQuery(name = "Usuario.findByFechaNacimiento", query = "SELECT u FROM Usuario u WHERE u.fechaNacimiento = :fechaNacimiento")})
 public class Usuario implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPersona")
+    private List<Profesional> profesionalList;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -185,6 +192,15 @@ public class Usuario implements Serializable {
     @Override
     public String toString() {
         return "com.ufps.app.finder.entity.Usuario[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<Profesional> getProfesionalList() {
+        return profesionalList;
+    }
+
+    public void setProfesionalList(List<Profesional> profesionalList) {
+        this.profesionalList = profesionalList;
     }
     
 }

@@ -37,6 +37,13 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Profesional implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProfesional")
+    private List<Titulo> tituloList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProfesional")
+    private List<Competencia> competenciaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProfesional")
+    private List<Habilidades> habilidadesList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProfesional")
     private List<Servicio> servicioList;
 
     private static final long serialVersionUID = 1L;
@@ -130,6 +137,33 @@ public class Profesional implements Serializable {
 
     public void setServicioList(List<Servicio> servicioList) {
         this.servicioList = servicioList;
+    }
+
+    @XmlTransient
+    public List<Titulo> getTituloList() {
+        return tituloList;
+    }
+
+    public void setTituloList(List<Titulo> tituloList) {
+        this.tituloList = tituloList;
+    }
+
+    @XmlTransient
+    public List<Competencia> getCompetenciaList() {
+        return competenciaList;
+    }
+
+    public void setCompetenciaList(List<Competencia> competenciaList) {
+        this.competenciaList = competenciaList;
+    }
+
+    @XmlTransient
+    public List<Habilidades> getHabilidadesList() {
+        return habilidadesList;
+    }
+
+    public void setHabilidadesList(List<Habilidades> habilidadesList) {
+        this.habilidadesList = habilidadesList;
     }
 
 }

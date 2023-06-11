@@ -4,10 +4,12 @@
  */
 package com.ufps.app.finder.controller;
 
+import com.ufps.app.finder.dto.HabilidadJson;
 import com.ufps.app.finder.dto.MensajeJson;
 import com.ufps.app.finder.dto.ProfesionJson;
 import com.ufps.app.finder.dto.ProfesionaProfesionJson;
 import com.ufps.app.finder.dto.SectorJson;
+import com.ufps.app.finder.entity.Habilidades;
 import com.ufps.app.finder.entity.Profesion;
 import com.ufps.app.finder.entity.ProfesionaProfesion;
 import com.ufps.app.finder.entity.Profesional;
@@ -16,9 +18,11 @@ import com.ufps.app.finder.entity.Usuario;
 import com.ufps.app.finder.repository.ProfesionRepository;
 import com.ufps.app.finder.repository.ProfesionaProfesionRepository;
 import com.ufps.app.finder.repository.ProfesionalRepository;
+import com.ufps.app.finder.repository.SectorRepository;
 import java.util.ArrayList;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +46,9 @@ public class ProfesionController {
 
     @Autowired
     private ProfesionalRepository profesionalRepository;
+
+    @Autowired
+    private SectorRepository sectorRepository;
 
     @Autowired
     private ProfesionaProfesionRepository profesionaProfesionRepository;
@@ -68,6 +75,32 @@ public class ProfesionController {
         }
         return ResponseEntity.ok(lista);
 
+    }
+
+    @PostMapping("/registro")
+    public ResponseEntity registro(@RequestBody ProfesionJson serv) {
+
+        Profesion p = new Profesion();
+
+        p.setProfesion(serv.getProfesion());
+
+        Optional<Sector> so = sectorRepository.findById(serv.getSector().getId());
+        MensajeJson msg = new MensajeJson();
+
+        if (so.isEmpty()) {
+            msg.setMsg("sector no existe");
+            return ResponseEntity.ok(msg);
+        }
+
+        Sector s = so.get();
+
+        p.setIdSector(s);
+
+        p = profesionRepository.save(p);
+
+        serv.setId(p.getId());
+
+        return ResponseEntity.ok(serv);
     }
 
     @PostMapping("/asignar")

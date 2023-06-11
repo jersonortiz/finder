@@ -5,14 +5,16 @@
 package com.ufps.app.finder.repository;
 
 import com.ufps.app.finder.entity.Sector;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  *
- * @author 
+ * @author
  */
 @Repository
 public interface SectorRepository extends JpaRepository<Sector, Long> {
-    
+
+    Optional<Sector> findById(Integer id);
 }

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.ufps.app</groupId>
 	<artifactId>finder</artifactId>
-	<version>0.8</version>
+	<version>1.1</version>
 	<name>finder</name>
 	<description>finder</description>
 	<properties>

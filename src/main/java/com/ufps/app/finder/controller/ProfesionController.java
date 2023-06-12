@@ -77,6 +77,37 @@ public class ProfesionController {
 
     }
 
+    @GetMapping("/consulta")
+    public ResponseEntity consulta(@RequestParam("id") int id) {
+
+        Optional<Profesion> op = profesionRepository.findById(id);
+        MensajeJson msg = new MensajeJson();
+        if (op.isEmpty()) {
+
+            msg.setMsg("no existe");
+            return ResponseEntity.ok(msg);
+        }
+
+        Profesion pr = op.get();
+
+        Sector p = pr.getIdSector();
+
+        ProfesionJson pj = new ProfesionJson();
+
+        pj.setId(pr.getId());
+        pj.setProfesion(pr.getProfesion());
+        ;
+
+        SectorJson sj = new SectorJson();
+
+        sj.setId(p.getId());
+        sj.setNombre(p.getNombre());
+
+        pj.setSector(sj);
+
+        return ResponseEntity.ok(pj);
+    }
+
     @PostMapping("/registro")
     public ResponseEntity registro(@RequestBody ProfesionJson serv) {
 
@@ -101,6 +132,69 @@ public class ProfesionController {
         serv.setId(p.getId());
 
         return ResponseEntity.ok(serv);
+    }
+
+    @PostMapping("/editar")
+    public ResponseEntity editar(@RequestBody ProfesionJson serv) {
+
+        System.out.println(serv.toString());
+
+        Optional<Profesion> op = profesionRepository.findById(serv.getId());
+
+        MensajeJson msg = new MensajeJson();
+
+        if (op.isEmpty()) {
+            msg.setMsg("no existe");
+            return ResponseEntity.ok(msg);
+        }
+
+        Profesion p = op.get();
+
+        p.setProfesion(serv.getProfesion());
+
+        Optional<Sector> so = sectorRepository.findById(serv.getSector().getId());
+
+        if (so.isEmpty()) {
+            msg.setMsg("sector no existe");
+            return ResponseEntity.ok(msg);
+        }
+
+        Sector s = so.get();
+
+        p.setIdSector(s);
+
+        p = profesionRepository.save(p);
+
+        serv.setId(p.getId());
+
+        return ResponseEntity.ok(serv);
+    }
+
+    @PostMapping("/eliminar")
+    public ResponseEntity eliminar(@RequestBody ProfesionJson serv) {
+
+        Optional<Profesion> op = profesionRepository.findById(serv.getId());
+
+        MensajeJson msg = new MensajeJson();
+
+        if (op.isEmpty()) {
+            msg.setMsg("no existe");
+            return ResponseEntity.ok(msg);
+        }
+
+        Profesion p = op.get();
+
+        try {
+            profesionRepository.delete(p);
+
+            msg.setMsg("ok");
+            return ResponseEntity.ok(msg);
+        } catch (Exception e) {
+
+            msg.setMsg("no");
+            return new ResponseEntity(msg, HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     @PostMapping("/asignar")

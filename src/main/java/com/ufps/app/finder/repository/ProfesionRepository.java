@@ -5,14 +5,16 @@
 package com.ufps.app.finder.repository;
 
 import com.ufps.app.finder.entity.Profesion;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  *
- * @author 
+ * @author
  */
 @Repository
 public interface ProfesionRepository extends JpaRepository<Profesion, Long> {
 
+    Optional<Profesion> findById(Integer id);
 }

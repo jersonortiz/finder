@@ -45,6 +45,9 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Usuario implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPersona")
+    private List<Empresa> empresaList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPersona")
     private List<Profesional> profesionalList;
 
     private static final long serialVersionUID = 1L;
@@ -201,6 +204,15 @@ public class Usuario implements Serializable {
 
     public void setProfesionalList(List<Profesional> profesionalList) {
         this.profesionalList = profesionalList;
+    }
+
+    @XmlTransient
+    public List<Empresa> getEmpresaList() {
+        return empresaList;
+    }
+
+    public void setEmpresaList(List<Empresa> empresaList) {
+        this.empresaList = empresaList;
     }
     
 }

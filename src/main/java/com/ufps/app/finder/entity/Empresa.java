@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -22,19 +24,17 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author 
+ * @author jerson
  */
 @Entity
-@Table(name = "sector")
+@Table(name = "empresa")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Sector.findAll", query = "SELECT s FROM Sector s"),
-    @NamedQuery(name = "Sector.findById", query = "SELECT s FROM Sector s WHERE s.id = :id"),
-    @NamedQuery(name = "Sector.findByNombre", query = "SELECT s FROM Sector s WHERE s.nombre = :nombre")})
-public class Sector implements Serializable {
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSector")
-    private List<OfertaTrabajo> ofertaTrabajoList;
+    @NamedQuery(name = "Empresa.findAll", query = "SELECT e FROM Empresa e"),
+    @NamedQuery(name = "Empresa.findById", query = "SELECT e FROM Empresa e WHERE e.id = :id"),
+    @NamedQuery(name = "Empresa.findByNombre", query = "SELECT e FROM Empresa e WHERE e.nombre = :nombre"),
+    @NamedQuery(name = "Empresa.findByEstado", query = "SELECT e FROM Empresa e WHERE e.estado = :estado")})
+public class Empresa implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -45,19 +45,26 @@ public class Sector implements Serializable {
     @Basic(optional = false)
     @Column(name = "nombre")
     private String nombre;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSector")
-    private List<Profesion> profesionList;
+    @Basic(optional = false)
+    @Column(name = "estado")
+    private int estado;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmpresa")
+    private List<OfertaTrabajo> ofertaTrabajoList;
+    @JoinColumn(name = "id_persona", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private Usuario idPersona;
 
-    public Sector() {
+    public Empresa() {
     }
 
-    public Sector(Integer id) {
+    public Empresa(Integer id) {
         this.id = id;
     }
 
-    public Sector(Integer id, String nombre) {
+    public Empresa(Integer id, String nombre, int estado) {
         this.id = id;
         this.nombre = nombre;
+        this.estado = estado;
     }
 
     public Integer getId() {
@@ -76,13 +83,29 @@ public class Sector implements Serializable {
         this.nombre = nombre;
     }
 
-    @XmlTransient
-    public List<Profesion> getProfesionList() {
-        return profesionList;
+    public int getEstado() {
+        return estado;
     }
 
-    public void setProfesionList(List<Profesion> profesionList) {
-        this.profesionList = profesionList;
+    public void setEstado(int estado) {
+        this.estado = estado;
+    }
+
+    @XmlTransient
+    public List<OfertaTrabajo> getOfertaTrabajoList() {
+        return ofertaTrabajoList;
+    }
+
+    public void setOfertaTrabajoList(List<OfertaTrabajo> ofertaTrabajoList) {
+        this.ofertaTrabajoList = ofertaTrabajoList;
+    }
+
+    public Usuario getIdPersona() {
+        return idPersona;
+    }
+
+    public void setIdPersona(Usuario idPersona) {
+        this.idPersona = idPersona;
     }
 
     @Override
@@ -95,10 +118,10 @@ public class Sector implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Sector)) {
+        if (!(object instanceof Empresa)) {
             return false;
         }
-        Sector other = (Sector) object;
+        Empresa other = (Empresa) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -107,16 +130,7 @@ public class Sector implements Serializable {
 
     @Override
     public String toString() {
-        return "com.ufps.app.finder.entity.Sector[ id=" + id + " ]";
-    }
-
-    @XmlTransient
-    public List<OfertaTrabajo> getOfertaTrabajoList() {
-        return ofertaTrabajoList;
-    }
-
-    public void setOfertaTrabajoList(List<OfertaTrabajo> ofertaTrabajoList) {
-        this.ofertaTrabajoList = ofertaTrabajoList;
+        return "com.ufps.app.finder.entity.Empresa[ id=" + id + " ]";
     }
     
 }

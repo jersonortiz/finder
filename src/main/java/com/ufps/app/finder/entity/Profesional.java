@@ -37,6 +37,9 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Profesional implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProfesional")
+    private List<OfertaProfesional> ofertaProfesionalList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProfesional")
     private List<Titulo> tituloList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProfesional")
     private List<Competencia> competenciaList;
@@ -164,6 +167,15 @@ public class Profesional implements Serializable {
 
     public void setHabilidadesList(List<Habilidades> habilidadesList) {
         this.habilidadesList = habilidadesList;
+    }
+
+    @XmlTransient
+    public List<OfertaProfesional> getOfertaProfesionalList() {
+        return ofertaProfesionalList;
+    }
+
+    public void setOfertaProfesionalList(List<OfertaProfesional> ofertaProfesionalList) {
+        this.ofertaProfesionalList = ofertaProfesionalList;
     }
 
 }

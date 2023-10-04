@@ -6,9 +6,7 @@ package com.ufps.app.finder.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,12 +17,10 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -39,7 +35,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "OfertaTrabajo.findByTitulo", query = "SELECT o FROM OfertaTrabajo o WHERE o.titulo = :titulo"),
     @NamedQuery(name = "OfertaTrabajo.findBySalario", query = "SELECT o FROM OfertaTrabajo o WHERE o.salario = :salario"),
     @NamedQuery(name = "OfertaTrabajo.findByJornada", query = "SELECT o FROM OfertaTrabajo o WHERE o.jornada = :jornada"),
-    @NamedQuery(name = "OfertaTrabajo.findByTipoDeContrato", query = "SELECT o FROM OfertaTrabajo o WHERE o.tipoDeContrato = :tipoDeContrato"),
     @NamedQuery(name = "OfertaTrabajo.findByFecha", query = "SELECT o FROM OfertaTrabajo o WHERE o.fecha = :fecha"),
     @NamedQuery(name = "OfertaTrabajo.findByExperiencia", query = "SELECT o FROM OfertaTrabajo o WHERE o.experiencia = :experiencia")})
 public class OfertaTrabajo implements Serializable {
@@ -64,23 +59,21 @@ public class OfertaTrabajo implements Serializable {
     @Column(name = "jornada")
     private int jornada;
     @Basic(optional = false)
-    @Column(name = "tipo_de_contrato")
-    private int tipoDeContrato;
-    @Basic(optional = false)
     @Column(name = "fecha")
     @Temporal(TemporalType.DATE)
     private Date fecha;
     @Basic(optional = false)
     @Column(name = "experiencia")
     private int experiencia;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idOfertaTrabajo")
-    private List<OfertaProfesional> ofertaProfesionalList;
     @JoinColumn(name = "id_empresa", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Empresa idEmpresa;
     @JoinColumn(name = "id_sector", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Sector idSector;
+    @JoinColumn(name = "id_tipo_contrato", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private TipoContrato idTipoContrato;
 
     public OfertaTrabajo() {
     }
@@ -89,13 +82,12 @@ public class OfertaTrabajo implements Serializable {
         this.id = id;
     }
 
-    public OfertaTrabajo(Integer id, String titulo, String contenido, String salario, int jornada, int tipoDeContrato, Date fecha, int experiencia) {
+    public OfertaTrabajo(Integer id, String titulo, String contenido, String salario, int jornada, Date fecha, int experiencia) {
         this.id = id;
         this.titulo = titulo;
         this.contenido = contenido;
         this.salario = salario;
         this.jornada = jornada;
-        this.tipoDeContrato = tipoDeContrato;
         this.fecha = fecha;
         this.experiencia = experiencia;
     }
@@ -140,14 +132,6 @@ public class OfertaTrabajo implements Serializable {
         this.jornada = jornada;
     }
 
-    public int getTipoDeContrato() {
-        return tipoDeContrato;
-    }
-
-    public void setTipoDeContrato(int tipoDeContrato) {
-        this.tipoDeContrato = tipoDeContrato;
-    }
-
     public Date getFecha() {
         return fecha;
     }
@@ -164,15 +148,6 @@ public class OfertaTrabajo implements Serializable {
         this.experiencia = experiencia;
     }
 
-    @XmlTransient
-    public List<OfertaProfesional> getOfertaProfesionalList() {
-        return ofertaProfesionalList;
-    }
-
-    public void setOfertaProfesionalList(List<OfertaProfesional> ofertaProfesionalList) {
-        this.ofertaProfesionalList = ofertaProfesionalList;
-    }
-
     public Empresa getIdEmpresa() {
         return idEmpresa;
     }
@@ -187,6 +162,14 @@ public class OfertaTrabajo implements Serializable {
 
     public void setIdSector(Sector idSector) {
         this.idSector = idSector;
+    }
+
+    public TipoContrato getIdTipoContrato() {
+        return idTipoContrato;
+    }
+
+    public void setIdTipoContrato(TipoContrato idTipoContrato) {
+        this.idTipoContrato = idTipoContrato;
     }
 
     @Override

@@ -5,6 +5,7 @@
 package com.ufps.app.finder.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ufps.app.finder.entity.TipoContrato;
 import java.util.Date;
 import lombok.Data;
 
@@ -25,7 +26,7 @@ public class OfertaTrabajoJson {
 
     private int jornada;
 
-    private int tipoDeContrato;
+    private TipoContratoJson idTipoContrato;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyy-MM-dd", timezone = "UTC")
     private Date fecha;
 
@@ -33,6 +34,6 @@ public class OfertaTrabajoJson {
 
     private int idEmpresa;
 
-    private int idSector;
+    private SectorJson idSector;
 
 }

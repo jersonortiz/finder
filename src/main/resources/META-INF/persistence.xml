@@ -20,6 +20,7 @@
     <class>com.ufps.app.finder.entity.Empresa</class>
     <class>com.ufps.app.finder.entity.OfertaTrabajo</class>
     <class>com.ufps.app.finder.entity.OfertaProfesional</class>
+    <class>com.ufps.app.finder.entity.TipoContrato</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/finder?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
       <property name="javax.persistence.jdbc.user" value="user"/>

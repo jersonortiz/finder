@@ -4,7 +4,6 @@
  */
 package com.ufps.app.finder.dto;
 
-import java.util.ArrayList;
 import lombok.Data;
 
 /**
@@ -12,16 +11,11 @@ import lombok.Data;
  * @author jerson
  */
 @Data
-public class EmpresaJson {
+public class TipoContratoJson {
 
     private Integer id;
 
     private String nombre;
 
-    private boolean estado;
-
-    private ArrayList<OfertaTrabajoJson> ofertaTrabajoList;
-
-    private int idPersona;
-
+    private String descripcion;
 }

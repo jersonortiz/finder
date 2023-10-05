@@ -62,10 +62,30 @@ public class EmpresaController {
         ArrayList<EmpresaJson> lista = new ArrayList<EmpresaJson>();
 
         for (Empresa x : em) {
-            if (x.getEstado()) {
+            if (!x.getEstado()) {
                 continue;
             }
             EmpresaJson e = empresaToEmpresaJson(x);
+
+            e.setOfertaTrabajoList(new ArrayList<OfertaTrabajoJson>());
+            lista.add(e);
+
+        }
+
+        return ResponseEntity.ok(lista);
+
+    }
+
+    @GetMapping("/listadm")
+    public ResponseEntity listAdmin() {
+        ArrayList<Empresa> em = (ArrayList<Empresa>) empresaRepository.findAll();
+        ArrayList<EmpresaJson> lista = new ArrayList<EmpresaJson>();
+
+        for (Empresa x : em) {
+
+            EmpresaJson e = empresaToEmpresaJson(x);
+
+            e.setOfertaTrabajoList(new ArrayList<OfertaTrabajoJson>());
             lista.add(e);
 
         }
@@ -101,8 +121,7 @@ public class EmpresaController {
         }
 
         ej.setOfertaTrabajoList(lista);
-
-        return ResponseEntity.ok(lista);
+        return ResponseEntity.ok(ej);
 
     }
 
@@ -136,7 +155,7 @@ public class EmpresaController {
 
         ej.setOfertaTrabajoList(lista);
 
-        return ResponseEntity.ok(lista);
+        return ResponseEntity.ok(ej);
 
     }
 
@@ -205,8 +224,14 @@ public class EmpresaController {
     public ResponseEntity cambioEmpresa(@RequestBody UsuarioJson user) {
 
         Usuario u = usuarioRepository.findById(user.getId());
-        System.out.println(user.getId());
 
+        if (u == null) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("no existe");
+            return ResponseEntity.ok(m);
+        }
+
+        System.out.println(user.getId());
         Optional<Empresa> pfind = empresaRepository.findByIdPersona(u);
 
         if (pfind.isPresent()) {
@@ -232,7 +257,7 @@ public class EmpresaController {
 
         p = empresaRepository.save(p);
 
-        UsuarioJson ujj = UsuarioToUsuarioJson(u);
+        EmpresaJson ujj = empresaToEmpresaJson(p);
 
         return ResponseEntity.ok(ujj);
 

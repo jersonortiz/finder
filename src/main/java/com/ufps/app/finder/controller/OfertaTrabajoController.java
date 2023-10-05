@@ -57,7 +57,7 @@ public class OfertaTrabajoController {
 
     @GetMapping("/list")
     public ResponseEntity list() {
-        ArrayList<OfertaTrabajo> em = (ArrayList<OfertaTrabajo>) ofertaTrabajoRepository.findAll();
+        ArrayList<OfertaTrabajo> em = (ArrayList<OfertaTrabajo>) ofertaTrabajoRepository.findAllByOrderByIdDesc();
         ArrayList<OfertaTrabajoJson> lista = new ArrayList<OfertaTrabajoJson>();
 
         for (OfertaTrabajo x : em) {
@@ -68,6 +68,26 @@ public class OfertaTrabajoController {
         }
 
         return ResponseEntity.ok(lista);
+
+    }
+
+    @GetMapping("/consulta")
+    public ResponseEntity consulta(@RequestParam("id") int id) {
+
+        Optional<OfertaTrabajo> eo = ofertaTrabajoRepository.findById(id);
+
+        if (eo.isEmpty()) {
+
+            MensajeJson m = new MensajeJson();
+            m.setMsg("oferta no existe");
+            return ResponseEntity.ok(m);
+        }
+
+        OfertaTrabajo ex = eo.get();
+
+        OfertaTrabajoJson ej = ofertaTrabajoToOfertaTrabajoJson(ex);
+
+        return ResponseEntity.ok(ej);
 
     }
 

@@ -20,9 +20,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OfertaProfesionalRepository extends JpaRepository<OfertaProfesional, Long> {
 
+    Optional<OfertaProfesional> findById(Integer id);
+
     ArrayList<OfertaProfesional> findByIdProfesional(Profesional id);
 
     ArrayList<OfertaProfesional> findByIdOfertaTrabajo(OfertaTrabajo id);
 
-    Optional<OfertaProfesional> findByIdProfesionalAndIdOfertaTrabajo(Profesional p, OfertaProfesional of);
+    Optional<OfertaProfesional> findByIdProfesionalAndIdOfertaTrabajo(Profesional p, OfertaTrabajo of);
 }

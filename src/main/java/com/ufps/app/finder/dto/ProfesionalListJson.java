@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import lombok.Data;
 
+
 /**
  *
  * @author
@@ -38,4 +39,10 @@ public class ProfesionalListJson {
 
     private ArrayList<ProfesionJson> profesiones;
 
+    public ProfesionalListJson() {
+    }
+
+    
+    
+    
 }

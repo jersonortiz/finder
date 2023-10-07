@@ -16,8 +16,6 @@ public class EmpresaJson {
 
     private Integer id;
 
-    private String nombre;
-
     private boolean estado;
 
     private ArrayList<OfertaTrabajoJson> ofertaTrabajoList;

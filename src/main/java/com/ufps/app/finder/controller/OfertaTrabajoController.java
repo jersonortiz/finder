@@ -218,9 +218,9 @@ public class OfertaTrabajoController {
 
         p.setTitulo(pub.getTitulo());
 
-        Optional<Empresa> oe = empresaRepository.findById(pub.getIdEmpresa());
+        //Optional<Empresa> oe = empresaRepository.findById(pub.getIdEmpresa());
 
-        p.setIdEmpresa(oe.get());
+        //p.setIdEmpresa(oe.get());
         p.setTitulo(pub.getTitulo());
         p.setContenido(pub.getContenido());
         p.setJornada(pub.getJornada());
@@ -232,9 +232,7 @@ public class OfertaTrabajoController {
 
         p.setIdSector(so.get());
 
-        Optional<Empresa> pp = empresaRepository.findById(pub.getIdEmpresa());
-
-        p.setIdEmpresa(pp.get());
+      
 
         Optional<TipoContrato> otc = tipoContratoRepository.findById(pub.getIdTipoContrato().getId());
 

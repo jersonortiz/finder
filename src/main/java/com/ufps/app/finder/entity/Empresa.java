@@ -28,7 +28,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Empresa.findAll", query = "SELECT e FROM Empresa e"),
     @NamedQuery(name = "Empresa.findById", query = "SELECT e FROM Empresa e WHERE e.id = :id"),
-    @NamedQuery(name = "Empresa.findByNombre", query = "SELECT e FROM Empresa e WHERE e.nombre = :nombre"),
     @NamedQuery(name = "Empresa.findByEstado", query = "SELECT e FROM Empresa e WHERE e.estado = :estado")})
 public class Empresa implements Serializable {
 
@@ -38,9 +37,7 @@ public class Empresa implements Serializable {
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @Column(name = "nombre")
-    private String nombre;
+
     @Basic(optional = false)
     @Column(name = "estado")
     private boolean estado;
@@ -55,9 +52,8 @@ public class Empresa implements Serializable {
         this.id = id;
     }
 
-    public Empresa(Integer id, String nombre, boolean estado) {
+    public Empresa(Integer id, boolean estado) {
         this.id = id;
-        this.nombre = nombre;
         this.estado = estado;
     }
 
@@ -67,14 +63,6 @@ public class Empresa implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
     }
 
     public boolean getEstado() {

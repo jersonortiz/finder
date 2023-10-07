@@ -4,6 +4,7 @@
  */
 package com.ufps.app.finder.controller;
 
+import com.ufps.app.finder.dto.EmpresaConsultaJson;
 import com.ufps.app.finder.dto.EmpresaJson;
 import com.ufps.app.finder.dto.MensajeJson;
 import com.ufps.app.finder.dto.OfertaTrabajoJson;
@@ -79,11 +80,11 @@ public class EmpresaController {
     @GetMapping("/listadm")
     public ResponseEntity listAdmin() {
         ArrayList<Empresa> em = (ArrayList<Empresa>) empresaRepository.findAll();
-        ArrayList<EmpresaJson> lista = new ArrayList<EmpresaJson>();
+        ArrayList<EmpresaConsultaJson> lista = new ArrayList<EmpresaConsultaJson>();
 
         for (Empresa x : em) {
 
-            EmpresaJson e = empresaToEmpresaJson(x);
+            EmpresaConsultaJson e = empresaConsultaToEmpresaJson(x);
 
             e.setOfertaTrabajoList(new ArrayList<OfertaTrabajoJson>());
             lista.add(e);
@@ -253,7 +254,6 @@ public class EmpresaController {
 
         p.setIdPersona(u);
         p.setEstado(true);
-        p.setNombre(user.getNombre());
 
         p = empresaRepository.save(p);
 
@@ -388,8 +388,21 @@ public class EmpresaController {
 
         ej.setId(e.getId());
         ej.setIdPersona(e.getIdPersona().getId());
-        ej.setNombre(e.getNombre());
         ej.setEstado(e.getEstado());
+
+        return ej;
+    }
+
+    public EmpresaConsultaJson empresaConsultaToEmpresaJson(Empresa e) {
+        EmpresaConsultaJson ej = new EmpresaConsultaJson();
+
+        Usuario u = e.getIdPersona();
+
+        ej.setId(e.getId());
+        ej.setEstado(e.getEstado());
+        ej.setNombre(u.getNombre());
+        ej.setEmail(u.getEmail());
+        ej.setTelefono(u.getTelefono());
 
         return ej;
     }

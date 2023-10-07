@@ -6,17 +6,19 @@ package com.ufps.app.finder.dto;
 
 import lombok.Data;
 
-
 /**
  *
- * @author 
+ * @author jerson
  */
 @Data
-public class ProfesionJson {
+public class OfertaProfesionalConsultaJson {
 
-    private int id;
+    private Integer id;
 
-    private String profesion;
+    private int estado;
 
-    private SectorJson sector;
+    private OfertaTrabajoJson idOfertaTrabajo;
+
+    private ProfesionalListJson idProfesional;
+
 }

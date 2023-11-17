@@ -381,6 +381,7 @@ public class PostulacionController {
         otj.setIdEmpresa(ot.getIdEmpresa().getId());
         otj.setTitulo(ot.getTitulo());
         otj.setContenido(ot.getContenido());
+        otj.setEstado(ot.getEstado());
 
         Sector se = ot.getIdSector();
 

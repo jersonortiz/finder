@@ -10,9 +10,9 @@
 	</parent>
 	<groupId>com.ufps.app</groupId>
 	<artifactId>finder</artifactId>
-	<version>1.1</version>
+	<version>1.5</version>
 	<name>finder</name>
-	<description>finder</description>
+	<description>finder project </description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>

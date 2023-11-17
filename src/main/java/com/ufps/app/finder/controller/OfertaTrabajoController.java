@@ -7,6 +7,7 @@ package com.ufps.app.finder.controller;
 import com.ufps.app.finder.dto.EmpresaJson;
 import com.ufps.app.finder.dto.MensajeJson;
 import com.ufps.app.finder.dto.OfertaTrabajoJson;
+import com.ufps.app.finder.dto.ProfesionalJson;
 import com.ufps.app.finder.dto.PublicacionJson;
 import com.ufps.app.finder.dto.SectorJson;
 import com.ufps.app.finder.dto.TipoContratoJson;
@@ -137,6 +138,35 @@ public class OfertaTrabajoController {
 
     }
 
+    @PostMapping("/suspender")
+    public ResponseEntity suspension(@RequestBody OfertaTrabajoJson pro) {
+
+        Optional<OfertaTrabajo> op = ofertaTrabajoRepository.findById(pro.getId());
+        if (op.isEmpty()) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("no");
+            return ResponseEntity.ok(m);
+        }
+
+        OfertaTrabajo p = op.get();
+
+        if (p.getEstado()) {
+            p.setEstado(false);
+            System.out.println("false");
+        } else {
+            p.setEstado(true);
+              System.out.println("true");
+        }
+
+        ofertaTrabajoRepository.save(p);
+
+        MensajeJson msg = new MensajeJson();
+        msg.setMsg("ok");
+
+        return ResponseEntity.ok(msg);
+
+    }
+
     @GetMapping("/porusuario")
     public ResponseEntity porUsuario(@RequestParam("id") int id) {
 
@@ -219,7 +249,6 @@ public class OfertaTrabajoController {
         p.setTitulo(pub.getTitulo());
 
         //Optional<Empresa> oe = empresaRepository.findById(pub.getIdEmpresa());
-
         //p.setIdEmpresa(oe.get());
         p.setTitulo(pub.getTitulo());
         p.setContenido(pub.getContenido());
@@ -231,8 +260,6 @@ public class OfertaTrabajoController {
         Optional<Sector> so = sectorRepository.findById(pub.getIdSector().getId());
 
         p.setIdSector(so.get());
-
-      
 
         Optional<TipoContrato> otc = tipoContratoRepository.findById(pub.getIdTipoContrato().getId());
 
@@ -271,6 +298,7 @@ public class OfertaTrabajoController {
         otj.setIdEmpresa(ot.getIdEmpresa().getId());
         otj.setTitulo(ot.getTitulo());
         otj.setContenido(ot.getContenido());
+        otj.setEstado(ot.getEstado());
 
         Sector se = ot.getIdSector();
 

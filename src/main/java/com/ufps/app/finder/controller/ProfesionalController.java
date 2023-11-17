@@ -328,6 +328,13 @@ public class ProfesionalController {
         }
     }
 
+    /*
+    estado = 2  usuairo
+    estado = 3  profesional
+    estado = 4  empresa
+    estado = 5 pendiente profesional
+    estado = 6 pendiente empresa
+     */
     @PostMapping("/cambiousuario")
     public ResponseEntity cambioUsuario(@RequestBody ProfesionalJson pro) {
 
@@ -361,6 +368,13 @@ public class ProfesionalController {
         }
     }
 
+    /*
+    estado = 2  usuairo
+    estado = 3  profesional
+    estado = 4  empresa
+    estado = 5 pendiente profesional
+    estado = 6 pendiente empresa
+     */
     @PostMapping("/cambiousuarioconusuario")
     public ResponseEntity cambioUsuarioWithUsuario(@RequestBody UsuarioJson pro) {
 
@@ -396,8 +410,56 @@ public class ProfesionalController {
         }
     }
 
+    /*
+    estado = 2  usuairo
+    estado = 3  profesional
+    estado = 4  empresa
+    estado = 5 pendiente profesional
+    estado = 6 pendiente empresa
+     */
     @PostMapping("/cambioprofesional")
     public ResponseEntity cambioprofesional(@RequestBody UsuarioJson user) {
+
+        Usuario u = usuarioRepository.findById(user.getId());
+        System.out.println(user.getId());
+
+        Optional<Profesional> pfind = profesionalRepository.findByIdPersona(u);
+
+        if (pfind.isPresent()) {
+
+            MensajeJson m = new MensajeJson();
+            m.setMsg("ya es profesional");
+            return ResponseEntity.ok(m);
+
+        }
+
+        Rol r = rolRepository.findById(5);
+        System.out.println(user.getId());
+
+        u.setIdRol(r);
+
+        usuarioRepository.save(u);
+
+        //Profesional p = new Profesional();
+        //p.setIdPersona(u);
+        //p.setEstado(true);
+        //p.setCiudad("cucuta");
+        //p = profesionalRepository.save(p);
+        UsuarioJson ujj = UsuarioToUsuarioJson(u);
+
+        return ResponseEntity.ok(ujj);
+
+    }
+
+    /*
+    estado = 2  usuairo
+    estado = 3  profesional
+    estado = 4  empresa
+    estado = 5 pendiente profesional
+    estado = 6 pendiente empresa
+     */
+    @PostMapping("/aprobar")
+    public ResponseEntity aprobarProfesional(@RequestBody UsuarioJson user) {
 
         Usuario u = usuarioRepository.findById(user.getId());
         System.out.println(user.getId());
@@ -426,6 +488,32 @@ public class ProfesionalController {
         p.setCiudad("cucuta");
 
         p = profesionalRepository.save(p);
+
+        UsuarioJson ujj = UsuarioToUsuarioJson(u);
+
+        return ResponseEntity.ok(ujj);
+
+    }
+
+    /*
+    estado = 2  usuairo
+    estado = 3  profesional
+    estado = 4  empresa
+    estado = 5 pendiente profesional
+    estado = 6 pendiente empresa
+     */
+    @PostMapping("/cancelar")
+    public ResponseEntity cancelar(@RequestBody UsuarioJson user) {
+
+        Usuario u = usuarioRepository.findById(user.getId());
+        System.out.println(user.getId());
+
+        Rol r = rolRepository.findById(2);
+        System.out.println(user.getId());
+
+        u.setIdRol(r);
+
+        usuarioRepository.save(u);
 
         UsuarioJson ujj = UsuarioToUsuarioJson(u);
 

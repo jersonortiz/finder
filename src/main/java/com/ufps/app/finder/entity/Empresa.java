@@ -5,7 +5,9 @@
 package com.ufps.app.finder.entity;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,8 +17,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -30,6 +34,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Empresa.findById", query = "SELECT e FROM Empresa e WHERE e.id = :id"),
     @NamedQuery(name = "Empresa.findByEstado", query = "SELECT e FROM Empresa e WHERE e.estado = :estado")})
 public class Empresa implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmpresa")
+    private List<OfertaTrabajo> ofertaTrabajoList;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -104,6 +111,15 @@ public class Empresa implements Serializable {
     @Override
     public String toString() {
         return "com.ufps.app.finder.entity.Empresa[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<OfertaTrabajo> getOfertaTrabajoList() {
+        return ofertaTrabajoList;
+    }
+
+    public void setOfertaTrabajoList(List<OfertaTrabajo> ofertaTrabajoList) {
+        this.ofertaTrabajoList = ofertaTrabajoList;
     }
     
 }

@@ -135,17 +135,8 @@ public class UserController {
         ArrayList<Usuario> usuarios = (ArrayList<Usuario>) usuarioRepository.findAll();
         ArrayList<UsuarioJson> lista = new ArrayList<UsuarioJson>();
         for (Usuario x : usuarios) {
-            UsuarioJson userj = new UsuarioJson();
-            userj.setId(x.getId());
-            userj.setApellido(x.getApellido());
-            userj.setNombre(x.getNombre());
-            userj.setDocumento(x.getDocumento());
-            userj.setEmail(x.getEmail());
-            userj.setTelefono(x.getTelefono());
-            userj.setRol(x.getIdRol().getId());
+            UsuarioJson userj = UsuarioToUsuarioJson(x);
 
-            userj.setFechaNacimiento(x.getFechaNacimiento());
-            System.out.println(x.getNombre());
             lista.add(userj);
         }
         return ResponseEntity.ok(lista);
@@ -172,15 +163,7 @@ public class UserController {
             return ResponseEntity.ok(m);
         }
 
-        UsuarioJson userj = new UsuarioJson();
-        userj.setId(x.getId());
-        userj.setApellido(x.getApellido());
-        userj.setNombre(x.getNombre());
-        userj.setDocumento(x.getDocumento());
-        userj.setEmail(x.getEmail());
-        userj.setTelefono(x.getTelefono());
-        userj.setRol(x.getIdRol().getId());
-        userj.setFechaNacimiento(x.getFechaNacimiento());
+        UsuarioJson userj = UsuarioToUsuarioJson(x);
 
         return new ResponseEntity(userj, HttpStatus.ACCEPTED);
 
@@ -216,25 +199,67 @@ public class UserController {
 
         }
 
-        UsuarioJson userj = new UsuarioJson();
-        userj.setId(x.getId());
-        userj.setApellido(x.getApellido());
-        userj.setNombre(x.getNombre());
-        userj.setDocumento(x.getDocumento());
-        userj.setEmail(x.getEmail());
-        userj.setTelefono(x.getTelefono());
-        userj.setRol(x.getIdRol().getId());
-        userj.setFechaNacimiento(x.getFechaNacimiento());
+        UsuarioJson userj = UsuarioToUsuarioJson(x);
 
         return ResponseEntity.ok(userj);
     }
 
+    @GetMapping("/listarol")
+    public ResponseEntity consultaRol(@RequestParam("id") int id) {
+
+        Rol r = rolRepository.findById(id);
+
+        ArrayList<Usuario> usuarios = (ArrayList<Usuario>) usuarioRepository.findByIdRol(r);
+        ArrayList<UsuarioJson> lista = new ArrayList<UsuarioJson>();
+        for (Usuario x : usuarios) {
+
+            UsuarioJson userj = UsuarioToUsuarioJson(x);
+            lista.add(userj);
+
+        }
+        return ResponseEntity.ok(lista);
+
+    }
+
     /*
-    
-    		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-jdbc</artifactId>
-		</dependency>
-    
+    estado = 2  usuairo
+    estado = 3  profesional
+    estado = 4  empresa
+    estado = 5 pendiente profesional
+    estado = 6 pendiente empresa
      */
+    @PostMapping("/cancelar")
+    public ResponseEntity cancelar(@RequestBody UsuarioJson user) {
+
+        Usuario u = usuarioRepository.findById(user.getId());
+        System.out.println(user.getId());
+
+        Rol r = rolRepository.findById(2);
+        System.out.println(user.getId());
+
+        u.setIdRol(r);
+
+        usuarioRepository.save(u);
+
+        UsuarioJson ujj = UsuarioToUsuarioJson(u);
+
+        return ResponseEntity.ok(ujj);
+
+    }
+
+    private UsuarioJson UsuarioToUsuarioJson(Usuario u) {
+        UsuarioJson uj = new UsuarioJson();
+
+        uj.setId(u.getId());
+        uj.setNombre(u.getNombre());
+        uj.setApellido(u.getApellido());
+        uj.setRol(u.getIdRol().getId());
+        uj.setEmail(u.getEmail());
+        uj.setDocumento(u.getDocumento());
+        uj.setContraseña(u.getContraseña());
+        uj.setTelefono(u.getTelefono());
+        uj.setFechaNacimiento(u.getFechaNacimiento());
+
+        return uj;
+    }
 }

@@ -8,13 +8,11 @@ import com.ufps.app.finder.dto.EmpresaConsultaJson;
 import com.ufps.app.finder.dto.EmpresaJson;
 import com.ufps.app.finder.dto.MensajeJson;
 import com.ufps.app.finder.dto.OfertaTrabajoJson;
-import com.ufps.app.finder.dto.ProfesionalJson;
 import com.ufps.app.finder.dto.SectorJson;
 import com.ufps.app.finder.dto.TipoContratoJson;
 import com.ufps.app.finder.dto.UsuarioJson;
 import com.ufps.app.finder.entity.Empresa;
 import com.ufps.app.finder.entity.OfertaTrabajo;
-import com.ufps.app.finder.entity.Profesional;
 import com.ufps.app.finder.entity.Rol;
 import com.ufps.app.finder.entity.Sector;
 import com.ufps.app.finder.entity.TipoContrato;
@@ -220,9 +218,16 @@ public class EmpresaController {
 
     /*
     toma el campo de nombre de usuario para el nombre de la empresa
+        
+    estado = 2  usuairo
+    estado = 3  profesional
+    estado = 4  empresa
+    estado = 5 pendiente profesional
+    estado = 6 pendiente empresa
+    
      */
-    @PostMapping("/cambioempresa")
-    public ResponseEntity cambioEmpresa(@RequestBody UsuarioJson user) {
+    @PostMapping("/aprobar")
+    public ResponseEntity aprobarEmpresa(@RequestBody UsuarioJson user) {
 
         Usuario u = usuarioRepository.findById(user.getId());
 
@@ -257,12 +262,68 @@ public class EmpresaController {
 
         p = empresaRepository.save(p);
 
-        EmpresaJson ujj = empresaToEmpresaJson(p);
+        UsuarioJson ujj = UsuarioToUsuarioJson(u);
 
         return ResponseEntity.ok(ujj);
 
     }
 
+    /*
+    toma el campo de nombre de usuario para el nombre de la empresa
+        
+    estado = 2  usuairo
+    estado = 3  profesional
+    estado = 4  empresa
+    estado = 5 pendiente profesional
+    estado = 6 pendiente empresa
+    
+     */
+    @PostMapping("/cambioempresa")
+    public ResponseEntity cambioEmpresa(@RequestBody UsuarioJson user) {
+
+        Usuario u = usuarioRepository.findById(user.getId());
+
+        if (u == null) {
+            MensajeJson m = new MensajeJson();
+            m.setMsg("no existe");
+            return ResponseEntity.ok(m);
+        }
+
+        System.out.println(user.getId());
+        Optional<Empresa> pfind = empresaRepository.findByIdPersona(u);
+
+        if (pfind.isPresent()) {
+
+            MensajeJson m = new MensajeJson();
+            m.setMsg("ya es empresa");
+            return ResponseEntity.ok(m);
+
+        }
+
+        Rol r = rolRepository.findById(6);
+        System.out.println(user.getId());
+
+        u.setIdRol(r);
+
+        usuarioRepository.save(u);
+
+        //Empresa p = new Empresa();
+        //p.setIdPersona(u);
+        //p.setEstado(true);
+        //p = empresaRepository.save(p);
+        UsuarioJson ujj = UsuarioToUsuarioJson(u);
+
+        return ResponseEntity.ok(ujj);
+
+    }
+
+    /*
+    estado = 2  usuairo
+    estado = 3  profesional
+    estado = 4  empresa
+    estado = 5 pendiente profesional
+    estado = 6 pendiente empresa
+     */
     @PostMapping("/cambiousuario")
     public ResponseEntity cambioUsuario(@RequestBody EmpresaJson pro) {
 
@@ -299,6 +360,13 @@ public class EmpresaController {
         }
     }
 
+    /*
+    estado = 2  usuairo
+    estado = 3  profesional
+    estado = 4  empresa
+    estado = 5 pendiente profesional
+    estado = 6 pendiente empresa
+     */
     @PostMapping("/cambiousuarioconusuario")
     public ResponseEntity cambioUsuarioWithUsuario(@RequestBody UsuarioJson pro) {
 
@@ -334,6 +402,32 @@ public class EmpresaController {
         }
     }
 
+    /*
+    estado = 2  usuairo
+    estado = 3  profesional
+    estado = 4  empresa
+    estado = 5 pendiente profesional
+    estado = 6 pendiente empresa
+     */
+    @PostMapping("/cancelar")
+    public ResponseEntity cancelar(@RequestBody UsuarioJson user) {
+
+        Usuario u = usuarioRepository.findById(user.getId());
+        System.out.println(user.getId());
+
+        Rol r = rolRepository.findById(2);
+        System.out.println(user.getId());
+
+        u.setIdRol(r);
+
+        usuarioRepository.save(u);
+
+        UsuarioJson ujj = UsuarioToUsuarioJson(u);
+
+        return ResponseEntity.ok(ujj);
+
+    }
+
     @GetMapping("/obtenerporusuario")
     public ResponseEntity loadByUser(@RequestParam("id") int id) {
 
@@ -360,6 +454,7 @@ public class EmpresaController {
         otj.setIdEmpresa(ot.getIdEmpresa().getId());
         otj.setTitulo(ot.getTitulo());
         otj.setContenido(ot.getContenido());
+        otj.setEstado(ot.getEstado());
 
         Sector se = ot.getIdSector();
 

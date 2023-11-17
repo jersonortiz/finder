@@ -35,5 +35,7 @@ public class OfertaTrabajoJson {
     private int idEmpresa;
 
     private SectorJson idSector;
+    
+    private boolean estado;
 
 }

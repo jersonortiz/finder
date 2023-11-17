@@ -20,5 +20,5 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
     Optional<Empresa> findById(Integer id);
 
     Optional<Empresa> findByIdPersona(Usuario id);
-
+    
 }

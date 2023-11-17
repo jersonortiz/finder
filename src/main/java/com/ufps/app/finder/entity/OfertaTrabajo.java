@@ -36,7 +36,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "OfertaTrabajo.findBySalario", query = "SELECT o FROM OfertaTrabajo o WHERE o.salario = :salario"),
     @NamedQuery(name = "OfertaTrabajo.findByJornada", query = "SELECT o FROM OfertaTrabajo o WHERE o.jornada = :jornada"),
     @NamedQuery(name = "OfertaTrabajo.findByFecha", query = "SELECT o FROM OfertaTrabajo o WHERE o.fecha = :fecha"),
-    @NamedQuery(name = "OfertaTrabajo.findByExperiencia", query = "SELECT o FROM OfertaTrabajo o WHERE o.experiencia = :experiencia")})
+    @NamedQuery(name = "OfertaTrabajo.findByExperiencia", query = "SELECT o FROM OfertaTrabajo o WHERE o.experiencia = :experiencia"),
+    @NamedQuery(name = "OfertaTrabajo.findByEstado", query = "SELECT o FROM OfertaTrabajo o WHERE o.estado = :estado")})
 public class OfertaTrabajo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -65,6 +66,9 @@ public class OfertaTrabajo implements Serializable {
     @Basic(optional = false)
     @Column(name = "experiencia")
     private int experiencia;
+    @Basic(optional = false)
+    @Column(name = "estado")
+    private boolean estado;
     @JoinColumn(name = "id_empresa", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Empresa idEmpresa;
@@ -82,7 +86,7 @@ public class OfertaTrabajo implements Serializable {
         this.id = id;
     }
 
-    public OfertaTrabajo(Integer id, String titulo, String contenido, String salario, int jornada, Date fecha, int experiencia) {
+    public OfertaTrabajo(Integer id, String titulo, String contenido, String salario, int jornada, Date fecha, int experiencia, boolean estado) {
         this.id = id;
         this.titulo = titulo;
         this.contenido = contenido;
@@ -90,6 +94,7 @@ public class OfertaTrabajo implements Serializable {
         this.jornada = jornada;
         this.fecha = fecha;
         this.experiencia = experiencia;
+        this.estado = estado;
     }
 
     public Integer getId() {
@@ -146,6 +151,14 @@ public class OfertaTrabajo implements Serializable {
 
     public void setExperiencia(int experiencia) {
         this.experiencia = experiencia;
+    }
+
+    public boolean getEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
     }
 
     public Empresa getIdEmpresa() {
